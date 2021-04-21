@@ -1,0 +1,14 @@
+# Directories
+dist
+src/types
+src/public
+
+# Files
+tailwind.config.js
+postcss.config.js
+tsconfig.json
+tsconfig.eslint.json
+package.json
+.prettierrc
+.prettierignore
+.eslintrc.js

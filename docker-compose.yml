@@ -1,0 +1,26 @@
+version: '3'
+services:
+#    mariadb:
+#        image: mariadb:10.5.8
+#        container_name: mariadb_udemy_node
+#        restart: always
+#        environment:
+#            MYSQL_ROOT_PASSWORD: root
+#            MYSQL_USER: masa
+#            MYSQL_PASSWORD: admin
+#        volumes:
+#            - ./db-data:/var/lib/mysql
+#        ports:
+#            - "3306:3306"
+
+    mongo:
+        image: mongo:bionic
+        restart: always
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: root
+            MONGO_INITDB_ROOT_PASSWORD: root
+            MONGO_INITDB_DATABASE: message-node
+        ports:
+            - 27018:27017
+        volumes:
+            - ./mongo/db:/data/db

@@ -40,6 +40,10 @@ module.exports = {
         '@typescript-eslint/no-explicit-any': 1,
         '@typescript-eslint/no-non-null-assertion': 0,
         '@typescript-eslint/no-var-requires': 0,
+        '@typescript-eslint/prefer-regexp-exec': 0,
+        '@typescript-eslint/no-unsafe-member-access': 0,
+        '@typescript-eslint/no-unsafe-call': 0,
+        '@typescript-eslint/no-unsafe-assignment': 0,
         'arrow-parens': [2, 'as-needed'],
         'brace-style': [0, 'never'],
         'comma-dangle': [2, 'never'],
@@ -74,9 +78,7 @@ module.exports = {
                     multiline: true,
                     minProperties: 4,
                     consistent: true
-                },
-                ImportDeclaration: 'never',
-                ExportDeclaration: 'never'
+                }
             }
         ],
         'object-curly-spacing': [1, 'always'],
@@ -84,7 +86,8 @@ module.exports = {
         'padded-blocks': 0,
         'prefer-arrow-callback': 2,
         'prefer-const': 2,
-        quotes: [2, 'single'],
+        'prefer-regex-literals': ['error', { disallowRedundantWrapping: true }],
+        quotes: [2, 'single', { allowTemplateLiterals: true }],
         'require-await': 1,
         semi: [2, 'never'],
         'space-before-function-paren': [0, 'never']

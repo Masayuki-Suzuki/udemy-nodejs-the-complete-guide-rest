@@ -70,3 +70,9 @@ typings/
 .next
 dist
 .idea
+
+# database
+db-data
+mongo
+
+# Editor
