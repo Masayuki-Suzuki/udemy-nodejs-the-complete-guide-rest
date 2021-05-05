@@ -5,3 +5,8 @@ type AsyncController<Req = Request, Res = Response, Rt = void> = (
     res: Res,
     next?: NextFunction
 ) => Promise<Rt>
+
+type CustomError = {
+    statusCode?: number
+    data?: unknown[]
+} & Error
