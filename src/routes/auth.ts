@@ -1,7 +1,7 @@
 import express from 'express'
 import { body } from 'express-validator'
 import User from '../models/user'
-import { signUp } from '../controllers/auth'
+import { login, signUp } from '../controllers/auth'
 import { AsyncController } from '../types/utils'
 
 const router = express.Router()
@@ -23,14 +23,14 @@ router.put(
                         }
                     })
                     .catch(err => console.error(err))
-            })
-            .normalizeEmail(),
+            }),
         body('password').trim().isLength({ min: 6 }),
         body('name').trim().not().isEmpty()
     ],
     signUp as AsyncController
 )
 
-router.post('/login')
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
+router.post('/login', login as AsyncController)
 
 export default router
