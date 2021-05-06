@@ -10,3 +10,10 @@ type CustomError = {
     statusCode?: number
     data?: unknown[]
 } & Error
+
+type JWTParams = {
+    email: string
+    userId: string
+    iat?: number
+    exp?: number
+}
