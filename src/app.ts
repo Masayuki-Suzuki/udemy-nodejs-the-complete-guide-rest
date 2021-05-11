@@ -8,6 +8,7 @@ import multer from 'multer'
 import { v4 as uuidV4 } from 'uuid'
 import feedRoutes from './routes/feed'
 import authRoutes from './routes/auth'
+import socket from './libs/socket'
 
 dotenv.config()
 const app = express()
@@ -86,9 +87,17 @@ mongoose
     .then(() => {
         console.info('Mongoose: connected DB.')
 
-        app.listen(8080, () => {
+        const server = app.listen(8080, () => {
             console.info('Server started.')
         })
+        const io = socket.init(server)
+        if (io) {
+            io.on('connection', socket => {
+                console.log('Client Connected.')
+            })
+        } else {
+            console.error(new Error(`Couldn't connect socket`))
+        }
     })
     .catch(err => {
         console.error(err)
