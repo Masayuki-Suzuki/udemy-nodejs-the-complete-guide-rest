@@ -5,10 +5,11 @@ import dotenv from 'dotenv'
 import bodyParser from 'body-parser'
 import mongoose from 'mongoose'
 import multer from 'multer'
+import cors from 'cors'
 import { v4 as uuidV4 } from 'uuid'
-import feedRoutes from './routes/feed'
-import authRoutes from './routes/auth'
-import socket from './libs/socket'
+import { graphqlHTTP } from 'express-graphql'
+import graphqlSchema from './graphql/schema'
+import graphqlResolver, { ExtendCustomError } from './graphql/resolvers'
 
 dotenv.config()
 const app = express()
@@ -40,6 +41,7 @@ const fileFilter = (req, file, cb) => {
 }
 
 // Middle Wares.
+app.use(cors())
 app.use(bodyParser.json())
 app.use(
     multer({
@@ -60,12 +62,28 @@ app.use((req, res, next) => {
         'OPTIONS, GET, POST, PUT, PATCH, DELETE'
     )
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+    if (req.method === 'OPTION') {
+        return res.sendStatus(200)
+    }
     next()
 })
 
-// Routing
-app.use('/feed', feedRoutes)
-app.use('/auth', authRoutes)
+app.use(
+    '/graphql',
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    graphqlHTTP({
+        schema: graphqlSchema,
+        rootValue: graphqlResolver,
+        graphiql: true,
+        customFormatErrorFn: err => {
+            if (!err.originalError) {
+                return err
+            }
+            const { data, message } = err.originalError as ExtendCustomError
+            return { message, data }
+        }
+    })
+)
 
 //eslint-disable-next-line
 app.use((req: any, res) => {
@@ -86,18 +104,9 @@ mongoose
     })
     .then(() => {
         console.info('Mongoose: connected DB.')
-
-        const server = app.listen(8080, () => {
+        app.listen(8080, () => {
             console.info('Server started.')
         })
-        const io = socket.init(server)
-        if (io) {
-            io.on('connection', socket => {
-                console.log('Client Connected.')
-            })
-        } else {
-            console.error(new Error(`Couldn't connect socket`))
-        }
     })
     .catch(err => {
         console.error(err)
