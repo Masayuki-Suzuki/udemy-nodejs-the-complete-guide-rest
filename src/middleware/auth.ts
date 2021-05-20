@@ -1,11 +1,11 @@
 import jwt from 'jsonwebtoken'
-import { CustomError, JWTParams } from '../types/utils'
+import { JWTParams } from '../types/utils'
 
 export default (req, res, next) => {
     if (!req.get('Authorization')) {
-        const error: CustomError = new Error('Not Authenticated.')
-        error.statusCode = 401
-        throw error
+        req.isAuth = false
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+        return next()
     }
     const token = req.get('Authorization').split(' ')[1]
     let decodedToken: JWTParams
@@ -16,16 +16,18 @@ export default (req, res, next) => {
             String(process.env.JWT_SECRET)
         ) as JWTParams
     } catch (err) {
-        console.error(err)
-        throw err
+        req.isAuth = false
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+        return next()
     }
 
     if (!decodedToken) {
-        const error: CustomError = new Error('Not Authenticated.')
-        error.statusCode = 401
-        throw error
+        req.isAuth = false
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+        return next()
     }
 
     req.userId = decodedToken.userId
+    req.isAuth = true
     next()
 }

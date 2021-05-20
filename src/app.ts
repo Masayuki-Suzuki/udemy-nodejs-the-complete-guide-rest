@@ -10,6 +10,7 @@ import { v4 as uuidV4 } from 'uuid'
 import { graphqlHTTP } from 'express-graphql'
 import graphqlSchema from './graphql/schema'
 import graphqlResolver, { ExtendCustomError } from './graphql/resolvers'
+import auth from './middleware/auth'
 
 dotenv.config()
 const app = express()
@@ -67,6 +68,8 @@ app.use((req, res, next) => {
     }
     next()
 })
+
+app.use(auth)
 
 app.use(
     '/graphql',
