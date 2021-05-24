@@ -11,6 +11,7 @@ import { graphqlHTTP } from 'express-graphql'
 import graphqlSchema from './graphql/schema'
 import graphqlResolver, { ExtendCustomError } from './graphql/resolvers'
 import auth from './middleware/auth'
+import { clearImage } from './libs/imageController'
 
 dotenv.config()
 const app = express()
@@ -70,7 +71,23 @@ app.use((req, res, next) => {
 })
 
 app.use(auth)
-
+app.put('/post-image', (req, res, next) => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
+    if (!req.isAuth) {
+        throw new Error('Not Authenticated.')
+    }
+    if (!req.file) {
+        return res.status(200).json({ message: 'No file provided' })
+    }
+    if (req.body.oldPath) {
+        clearImage(req.body.oldPath)
+    }
+    return res.status(200).json({
+        message: 'File stored.',
+        filePath: req.file.path.replace('src/public', '')
+    })
+})
 app.use(
     '/graphql',
     // eslint-disable-next-line @typescript-eslint/no-misused-promises

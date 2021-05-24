@@ -1,12 +1,10 @@
-import fs from 'fs'
-import path from 'path'
 import { Document } from 'mongoose'
 import { validationResult } from 'express-validator'
 import { NextFunction, Request, Response } from 'express'
 import { CustomError } from '../types/utils'
 import Post from '../models/post'
 import User from '../models/user'
-import { getIo } from '../libs/socket'
+import { clearImage } from '../libs/imageController'
 
 type Creator = {
     name: string
@@ -243,14 +241,4 @@ export const deletePost = async (req, res, next): Promise<void> => {
             }
         }
     }
-}
-
-const clearImage = filePath => {
-    filePath = path.join(__dirname, '../public', filePath)
-    fs.unlink(filePath, err => {
-        if (err) {
-            console.error(err)
-            throw err
-        }
-    })
 }
